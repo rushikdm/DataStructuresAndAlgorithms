@@ -2,44 +2,53 @@
 
 ## When to use arrays in C++
 
-	1. The program needs to have multiple elements of same type. 
+	1. The program needs to manage multiple elements of same type. 
 
-	2. The size of the elements is known at compile time. 
+	2. The size of the elements is fixed and known at compile time. 
 
-	3. The program does not need to change the size of the array. 
+There are several scenario in which multiple elements of same type needs to be managed and size of the elements is fixed. In such cases C++ arrays can be used. Following are some such examples along with possible C++ implementation using arrays:
 
-	4. The treatment to be applied is same for all the elements of the array.
-
-Items 1,2,3 mentioned above are enforced by the C++ language. Item 4 is not enforced by the C++ language itself, but, it is mentioned from good design perspective.
-
-For example:
+### Triangle always has 3 vertices.
 
 ```cpp
 class Triangle
 {
-	Point points[3];
-	...
+	Point vertices[3];
+
+	// rest of the implementation . . . 
 };
 ```
-
-Triangle class needs to have exactly 3 Point objects in it. In this case there is no need to alter the size of the points array, triangle always needs 3 points only, no more, no less. So having an array of points in this case is a good choice.  
-
-Now let us consider the design of Point class. We will assume 2 dimensional point in this case. There are two possibilities as follows:
+	
+### Calendar application needs to have 7 weekdays and 12 months.
 
 ```cpp
-class Point 
-{
-	double coordinates[2];
-	...
-};
+string weekdays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+string months[12] = {"January", "February","March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 ```
 
-or 
+### Any GUI application that needs to display buttons for digits from 0 to 9.
 
 ```cpp
-class Point 
+Button digits[10] = {Button("0"), Button("1"), Button("2"), Button("3"), Button("4"), Button("5"), Button("6"), Button("7"), Button("8"), Button("9")};
+```
+
+### 15 puzzle game
+
+```cpp
+class Puzzle15
 {
-	double x;
-	double y;
+	short cells[4][4];
+	
+	// rest of the implementation . . . 
 };
 ```
+
+### Homogeneous 3D transformation matrix in computer graphics application
+
+```cpp
+class Transformation3D
+{
+	double mat[4][4];
+	
+	// rest of the implementation . . . 
+};
