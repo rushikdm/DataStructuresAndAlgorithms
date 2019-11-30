@@ -54,7 +54,7 @@ class Transformation3D
 };
 ```
 
-**Quick syntax for C++ arrays**
+**Syntax for C++ arrays**
 
 Creates an int array of length 5. All int elements in array have garbage values.
 ```cpp
@@ -103,4 +103,34 @@ int numbers[5] = {1, 2}; // numbers contains {1, 2, 0, 0, 0}
 Same as above; **=** can be omitted.
 ```cpp
 int numbers[5]{1, 2}; // numbers contains {1, 2, 0, 0, 0}
+```
+In C++ it is also possible to create arrays of objects. Let us consider a Point class representing a 2 dimensional point as follows:
+
+```cpp
+class Point
+{
+  double x;
+  double y;
+  
+  public:
+    Point():x(0), y(0) { }
+    Point(const double ix, const double iy) : x(ix), y(iy) { }
+    
+  // rest of the implementation
+};
+```
+The various ways of creating array of Point objects is mentioned below:
+
+Following expression creates array with 2 Point objects. Default constructor is automatically invoked to create objects.
+```cpp
+Point points[2];
+```
+Following expression shows the way to create Point objects by invoking other than default constructor:
+```cpp
+Point points[2]{Point(0, 0), Point(2,3)};
+```
+
+From C++11 onwards, we can have uniform initialization as follows:
+```cpp
+Point points[2]{{0, 0}, {2,3}};
 ```
