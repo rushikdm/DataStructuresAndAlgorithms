@@ -240,7 +240,7 @@ int main()
 
 std::array is a simple container class inroduced in C++11. It has begin(), end() functions for retrieving the iterators. 
 
-Here is an example for usage of std::min_element to retrieve the minimum value from array:
+Here is an example for usage of **std::min_element** to retrieve the minimum value from array:
 ```cpp
 #include <iostream>
 #include <algorithm>
@@ -254,7 +254,7 @@ int main()
   return 0;
 }
 ```
-Here is an example for usage of std::max_element to retrieve the maximum value from array:
+Here is an example for usage of **std::max_element** to retrieve the maximum value from array:
 ```cpp
 #include <iostream>
 #include <algorithm>
@@ -268,14 +268,14 @@ int main()
   return 0;
 }
 ```
-Here is an example for usage of std::binary_search to find if a number exists in a sorted array:
+Here is an example for usage of **std::binary_search** to find if a number exists in a sorted array:
 ```cpp
 #include <iostream>
 #include <algorithm>
 
 int main()
 {
-  int numbers[]{1, 2, 4, 6, 7, 9, 11, 13, 15, 20};
+  int numbers[]{1, 2, 4, 6, 7, 9, 11, 13, 15, 20}; // array needs to be sorted before calling std::binary_search function.
   const int len = sizeof(numbers)/sizeof(numbers[0]);
   bool found = std::binary_search(numbers, numbers+len, 9);
   if(found)
@@ -283,7 +283,7 @@ int main()
   else
     std::cout << "9 not found.";
 	
-    found = std::binary_search(numbers, numbers+len, 8);
+  found = std::binary_search(numbers, numbers+len, 8);
   if(found)
     std::cout << "\nFound 8";
   else
