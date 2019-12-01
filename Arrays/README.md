@@ -144,6 +144,7 @@ Point points[2]{{0, 0}, {2,3}};
 ### Disadvantages of arrays
 
 **Array decay problem**
+
 The array length can determined as follows:
 ```cpp
 int numbers[5]{1, 2, 3, 4, 5};
@@ -163,7 +164,7 @@ int GetSum(int[] numbers)
 }
 ```
 
-Hence, avoid this problem, it is always required to pass the array length information as well along with the array as follows:
+To avoid this problem, it is always required to pass the array length information along with the array as follows:
 ```cpp
 const int len{5};
 int numbers[len] {1, 2, 3, 4, 5};
@@ -180,7 +181,7 @@ int GetSum(int numbers[], const int len)
   return sum;
 }
 ```
-This works fine; array decay issue is taken care of. But it is combursome to always pass extra information of array length wheneber array needs to be passed as input to some other function.
+This works fine; array decay issue is taken care of. But it is combursome to always pass extra information of array length whenever array needs to be passed as input to some other function.
 
 C++ standard library provides array<> template and it can be used as an alternative to above approach of solving array decay problem. array<> template is a container, hence using it can have some additional benefits compared to using bare array. Following code shows usage of array<> template:
 
@@ -193,6 +194,7 @@ int main()
   array<int, 5> numbers {1, 2, 3, 4, 5};
   int sum = GetSum(numbers);
   std::cout << sum; // outputs 15
+  return 0;
 }
 
 int GetSum(array<int, 5> & numbers)
@@ -201,5 +203,92 @@ int GetSum(array<int, 5> & numbers)
   for(int num : numbers)
     sum += num;
   return sum;
+}
+```
+
+array is a simple datastructure and container unlike other containers provided by C++ standard library. Yet we can use some of the C++ standard library algorithm functions with arrays as well. This is possible because pointers also act as iterators in C++. 
+
+In earlier example, we wrote a separate function **GetSum** to determine the sum of all the array elements. This can can be achieved using std::accumulate function available under numeric header. Following code depicts its usage: 
+```cpp
+#include <iostream>
+#include <numeric>
+
+int main()
+{
+  const int len = 5;
+  int numbers[len]{1,2,3,4,5};
+  int sum = std::accumulate(numbers, numbers+len, 0);
+  std::cout << sum; // outputs 15
+  return 0;
+}
+```
+
+The same example can be done with std::array as follows: 
+```cpp
+#include <iostream>
+#include <array>
+#include <numeric>
+
+int main()
+{
+  std::array<int, 5> numbers{1, 2, 3, 4, 5};
+  int sum = std::accumulate(numbers.begin(), numbers.end(), 0);
+  std::cout << sum; // outputs 15
+  return 0;
+}
+```
+
+std::array is a simple container class inroduced in C++11. It has begin(), end() functions for retrieving the iterators. 
+
+Here is an example for usage of std::min_element to retrieve the minimum value from array:
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main()
+{
+  const int len = 5;
+  int numbers[len]{6,3,9,4,8};
+  int * pmin = std::min_element(numbers, numbers+len);
+  std::cout << *pmin; // outputs 3
+  return 0;
+}
+```
+Here is an example for usage of std::max_element to retrieve the maximum value from array:
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main()
+{
+  const int len = 5;
+  int numbers[len]{6,3,9,4,8};
+  int * pmax = std::max_element(numbers, numbers+len);
+  std::cout << *pmax; // outputs 9
+  return 0;
+}
+```
+Here is an example for usage of std::binary_search to find if a number exists in a sorted array:
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main()
+{
+  int numbers[]{1, 2, 4, 6, 7, 9, 11, 13, 15, 20};
+  const int len = sizeof(numbers)/sizeof(numbers[0]);
+  bool found = std::binary_search(numbers, numbers+len, 9);
+  if(found)
+    std::cout << "Found 9";
+  else
+    std::cout << "9 not found.";
+	
+    found = std::binary_search(numbers, numbers+len, 8);
+  if(found)
+    std::cout << "\nFound 8";
+  else
+    std::cout << "\n8 not found.";
+
+  return 0;
 }
 ```
