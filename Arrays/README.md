@@ -1,10 +1,21 @@
 # Arrays
+* An array is a collection of elements of same type.
+* The elements of the array are placed in continguous memory locations.
+* Any random element of the array can be accessed using its index. 
 
-## When to use arrays in C++
+## Statically declared arrays
+* Size of array is declared at compile time.
+* Size of the array is fixed and cannot change.
+* C++ compiler automatically handles the allocation and deallocation of memory for statically declared arrays.
 
-	1. The program needs to manage multiple elements of same type. 
+## Dynamically declared arrays
+* Size of array can be declared at run time.
+* Size of the array can be altered.
+* Memory allocation and deallocation needs to be managed by programmer.
 
-	2. The size of the elements is fixed and known at compile time. 
+## When to use statically declared arrays in C++
+  1. The program needs to manage multiple elements of same type. 
+  2. The size of the elements is fixed and known at compile time. 
 
 There are several scenario in which multiple elements of same type needs to be managed and size of the elements is fixed. In such cases C++ arrays can be used. Following are some such examples along with C++ code snippet using arrays:
 
@@ -13,9 +24,8 @@ There are several scenario in which multiple elements of same type needs to be m
 ```cpp
 class Triangle
 {
-	Point vertices[3];
-
-	// rest of the implementation . . . 
+  Point vertices[3];
+  // rest of the implementation . . . 
 };
 ```
 	
@@ -37,9 +47,8 @@ Button digits[] = {Button("0"), Button("1"), Button("2"), Button("3"), Button("4
 ```cpp
 class Puzzle15
 {
-	short cells[4][4];
-	
-	// rest of the implementation . . . 
+  short cells[4][4];
+  // rest of the implementation . . . 
 };
 ```
 
@@ -48,9 +57,8 @@ class Puzzle15
 ```cpp
 class Transformation3D
 {
-	double mat[4][4];
-	
-	// rest of the implementation . . . 
+  double mat[4][4];
+  // rest of the implementation . . . 
 };
 ```
 
@@ -134,7 +142,7 @@ From C++11 onwards, we can have uniform initialization as follows:
 ```cpp
 Point points[2]{{0, 0}, {2,3}};
 ```
-### Advantages of arrays
+### Advantages of statically declared arrays
 
 1. Simple to create and use.
 2. The memory allocation for array elements is contineous. Hence fast random access behavior, guarantees O(1) runtime.
@@ -292,7 +300,7 @@ int main()
   return 0;
 }
 ```
-Here is an example for usage of std::min_element and std::max_element functions to find the left most and right most vertex of a triangle.
+Here is an example for usage of **std::min_element** and **std::max_element** functions to find the left most and right most vertex of a triangle.
 
 ```cpp
 /* author: Rushikesh Keshavrao Deshmukh
