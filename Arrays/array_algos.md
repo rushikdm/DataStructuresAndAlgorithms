@@ -60,7 +60,8 @@ Find the frequency of values in unsorted/sorted array.
 3. Implement bubble sort algorithm.
 4. Implement Insertion sort algorithm.
 5. Implement selection sort algorithm.
-6. Modify selection sort algorithm by proceeding from both ends by finding both min and max.
+7. Modify selection sort algorithm by proceeding from both ends by finding both min and max.
+8. Implement merge sort algorithm.
 
 ### Transform and conquer
 1. Suffix sum array to address range sum queries.
