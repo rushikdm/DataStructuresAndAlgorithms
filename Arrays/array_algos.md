@@ -66,4 +66,4 @@ Find mode in unsorted array.
 
 ### Transform and conquer
 1. Suffix sum array to address range sum queries.
-2. Range update data structure. Perform efficient updates to add a number to all the entries in specified ranges.
+2. Range update data structure. Perform efficient updates to add a number to all the elements in specified range.
