@@ -30,6 +30,8 @@ An array is a collection of elements of the same data type placed in contiguous 
 4. Find both minimum and maximum values in unsorted array
 
 Find the frequency of values in unsorted/sorted array.
+Find mode in unsorted array.
+
 ### Binary search: Decrease and conquer
 1. Find the index of some number in sorted array if present otherwise return -1
 2. Find the start and end indices in sorted array containing given value (lower and upper bound, equal_range function in C++)
@@ -48,7 +50,6 @@ Find the frequency of values in unsorted/sorted array.
 5. Partition an array around given element such that all elements less than should come to left and all elements should come to right side
 6. Find median in array.
 7. Find kth largest element in array.
-8. Find mode in unsorted array.
 
 ### Sliding window technique
 1. Find all subarrays that add upto a given sum.
