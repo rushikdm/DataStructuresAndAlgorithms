@@ -12,6 +12,21 @@
  * Find the path between the vertices of line1 using depth first search graph traversal algorithm.
  * Return the points for the path.
  * 
+ * Input data for this program:
+ 11
+2 2 0 3 5 0 
+3 5 0 6 6 0 
+6 6 0 8 4 0 
+8 4 0 8 2 0
+8 2 0 5 3 0
+5 3 0 2 2 0
+3 5 0 5 3 0
+5 3 0 6 6 0
+8 4 0 10 5 0 
+5 3 0 5 1 0
+5 1 0 8 2 0
+
+8 2 0 8 4 0
 */
 
 #include <algorithm>
@@ -164,6 +179,7 @@ struct Graph
 		if(!found)
 			return false;
 
+		path.push_back(index1);
 		int index = index2;
 		while(index != index1)
 		{
@@ -171,8 +187,6 @@ struct Graph
 			path.push_back(index);
 			index = prev[index];
 		}
-
-		path.push_back(index1);
 
 		return found;
 	}
