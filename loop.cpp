@@ -9,7 +9,7 @@
  * Form adjacency list graph data structure from the given data i.e. vector<Line> lines;
  * Remove the edge for line1 from the graph.
  * Find the indices of vertices belonging to the line1 points.
- * Find the path between the vertices of line1 using depth first search graph traversal algorithm.
+ * Find the path between the vertices of line1 using breadth first search graph traversal algorithm.
  * Return the points for the path.
  * 
  * Input data for this program:
