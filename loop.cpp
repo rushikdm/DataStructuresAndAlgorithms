@@ -2,8 +2,6 @@
  * @email  : rushissv@gmail.com
  * @date   : 21-Jan-2024
  *
- * Autodesk interview
- * Interview date: 16-Jan-2024 2:30 pm to 4:00 pm
  * Question : Find the loop containing given line. Implement the following function:
  * void find_loop(vector<Line>& lines, Line line1, vector<Point>& loopPoints)
  * 
