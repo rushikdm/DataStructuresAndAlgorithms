@@ -1,0 +1,76 @@
+Autodesk interview questions
+
+Data structures and algorithms:
+
+1. Implement binary search algorithm by implementing following function in C++:
+
+		int binary_search(const vector<int>& v, int num);
+		
+		Return the index of num in vector v. 
+		Return -1 if num does not exist in vector v.
+		
+		What are the prerequisites for binary search? Can we do binary search in any vector?
+		In how many ways binary search can be implemented? 
+		Explain the space and time requirements for binary search with various approaches.
+		
+		Is it possible to do binary search on linked list? Explain the reason.
+		In binary search, consider following statement:
+
+		int midIndex = (startIndex + endIndex) / 2;
+		
+		What issue can occur with above statement? How to solve it?
+
+2. Consider sequence of numbers : 01211022011 etc. Only 0, 1, 2 numbers can be present in it. Write an algorithm to sort such sequence of numbers. Sorting should happen inplace i.e. the input sequence of numbers itself should be modified as the algorithm proceeds and no extra memory should be used by having another array or list. However, algorithm may use constant (one or two elements) memory. The elements may be objects associated with 0, 1, 2 integer values and may contain other data. How to sort such objects inplace as per integer values?
+
+3. What is hash table data structure? How does it work?
+
+4. Design data structure that retrieves elements from hashtable as per the insertion order. 
+
+5. Consider a general tree with one root node. Each node in this tree may have zero, one, or any number of child nodes. Write an algorithm to determine top view of such a tree. Top view consists of nodes from left to right when viewed from top. 
+
+6. What are different kinds of tree?
+
+7. Write an algorithm to remove a node from binary search tree.
+
+8. Write an algorithm to do level order traversal of nodes in a tree.
+
+9. How to implement persistent data structures with undo, redo in an application?
+
+
+
+Multithreading:
+
+1. What is multithreading?
+
+2. Provide software implementation of mutex.
+
+3. Consider teachers, students and transactions between teachers and students in the form of assessment. Our requirement is to store transactions in database or file or any other location. Design concurrent solution to it so that multiple transactions can happen concurrently. The number of students, teachers and number of transactions are very high and we don't want to create those many threads. How will you design such concurrent system where the number of threads needs to be restricted to some max bound? 
+
+
+System design and design patterns:
+
+1. Design the solution to implement courier pickup, delivery system. Which design pattern can be used to solve this problem?
+
+2. Which design pattern did you use in your project? Explain the need and how it got fulfilled with design pattern?
+
+3. Implement composite design pattern.
+
+4. Design solution to store transactions in multiple storage types such as database, file etc. 
+
+5. Design system for searching a ride, booking the ride. 	
+
+C++ programming language:
+
+1. How does explicit keyword in C++ works?
+
+2. What is polymorphism and how it works in C++?
+
+3. How shared_ptr is implemented in C++? How does it maintain reference count?
+
+4. Which data structure in C++ uses hash table?
+
+5. What is difference between map and unordered_map in C++? 
+
+6. How lambda functions in C++ are implemented? 
+   Are captured variables of lambda modifiable? 
+
