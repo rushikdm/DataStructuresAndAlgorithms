@@ -1,4 +1,4 @@
-Autodesk interview questions
+Interview questions
 
 Data structures and algorithms:
 
@@ -19,6 +19,8 @@ Data structures and algorithms:
 		int midIndex = (startIndex + endIndex) / 2;
 		
 		What issue can occur with above statement? How to solve it?
+
+		What issue did you face with binary search function from C++ 11 standard library? 
 
 2. Consider sequence of numbers : 01211022011 etc. Only 0, 1, 2 numbers can be present in it. Write an algorithm to sort such sequence of numbers. Sorting should happen inplace i.e. the input sequence of numbers itself should be modified as the algorithm proceeds and no extra memory should be used by having another array or list. However, algorithm may use constant (one or two elements) memory. The elements may be objects associated with 0, 1, 2 integer values and may contain other data. How to sort such objects inplace as per integer values?
 
