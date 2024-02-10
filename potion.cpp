@@ -18,6 +18,19 @@
  * 
  * The program should be able to determine if unique solution exists or not.
  * 
+Sample input:
+
+3
+0 1 9 4
+2 1 1 2 
+
+3 is the total number of ingredients in potion.
+Second line indicates that the relative poportions of ingredients 0, 1 should be 9:4
+Similarly last line indicates that the relative proportions of ingredients 2, 1 should be 1:2
+The final proportions of all ingredients should respect all the given relative proportions if solution exists.
+The answer to above problem is as follows:
+(9/15)    (4/15)    (2/15)
+0.6000    0.2667    0.133
  */
 #include <iostream>
 #include <vector>
