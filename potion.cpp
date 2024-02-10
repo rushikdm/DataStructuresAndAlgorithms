@@ -1,9 +1,7 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <array>
-
 /**
+ * @author : Rushikesh Keshavrao Deshmukh
+ * @email  : rushissv@gmail.com
+ * 
  * Write a program to determine proportions for a potion.
  * The potion has n ingredients.
  * (n-1) inputs for the relative proportions of two ingredients are given as follows:
@@ -21,6 +19,11 @@
  * The program should be able to determine if unique solution exists or not.
  * 
  */
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <array>
+
 using namespace std;
 
 struct Input
