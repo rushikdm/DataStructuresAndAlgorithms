@@ -30,7 +30,7 @@ Similarly last line indicates that the relative proportions of ingredients 2, 1 
 The final proportions of all ingredients should respect all the given relative proportions if solution exists.
 The answer to above problem is as follows:
 (9/15)    (4/15)    (2/15)
-0.6000    0.2667    0.133
+0.6000    0.2667    0.1333
  */
 #include <iostream>
 #include <vector>
