@@ -1,7 +1,7 @@
 /**
  * @author : Rushikesh Keshavrao Deshmukh
  * @email  : rushissv@gmail.com
- * 
+ *
  * Write a program to determine proportions for a potion.
  * The potion has n ingredients.
  * (n-1) inputs for the relative proportions of two ingredients are given as follows:
@@ -17,12 +17,12 @@
  * If solution does not exist or if there is no unique solution, all the proportions should be zero.
  * 
  * The program should be able to determine if unique solution exists or not.
- * 
+ 
 Sample input:
 
 3
 0 1 9 4
-2 1 1 2 
+2 1 1 2
 
 3 is the total number of ingredients in potion.
 Second line indicates that the relative poportions of ingredients 0, 1 should be 9:4
@@ -32,132 +32,79 @@ The answer to above problem is as follows:
 (9/15)    (4/15)    (2/15)
 0.6000    0.2667    0.1333
  */
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <array>
+#include <numeric>
+#include <assert.h>
 
 using namespace std;
 
-struct Input
+struct ProportionEntry
 {
-	int n=0;
-	vector<array<int, 4>> v;
+	struct Entry
+	{
+		int index;
+		int amount;
+	};
+	
+	Entry ingredient1;
+	Entry ingredient2;
 };
 
-istream& operator >> (istream& is, Input& input)
+static istream& operator >> (istream& is, ProportionEntry& proportionEntry)
 {
-	is >> input.n;
-	input.v.reserve(input.n-1);
-	for(int i=0;i<(input.n-1);++i)
-		is >> input.v[i][0] >> input.v[i][1] >> input.v[i][2] >> input.v[i][3];
+	is >> proportionEntry.ingredient1.index;
+	is >> proportionEntry.ingredient2.index;
+	is >> proportionEntry.ingredient1.amount;
+	is >> proportionEntry.ingredient2.amount;
 	return is;
 }
 
-bool determinePotionIngredientsProportion(const Input& input, vector<double>& proportions);
+static bool determineProportions
+(
+	const int N, 
+	const vector<ProportionEntry>& iProportionEntries, 
+	vector<double>& oProportions
+);
 
 class Potion;
 
-ostream& operator << (ostream& os, const Potion& potion);
+static ostream& operator << (ostream& os, const Potion& potion);
 
 class Potion
 {
-	vector<pair<int, int>> v;
+	struct Ingredient
+	{
+		int amount;
+		int group;
+	};
+	
+	vector<Ingredient> ingredients;
 	int maxGroup = 1;
 	
 	public:
 	
-	Potion(const int N) : v(N) {}
+	Potion(const int N) : ingredients(N) {}
 	
-	bool isGroupAssigned(const int index)
+	bool addProportionEntry(const ProportionEntry& iProportionEntry)
 	{
-		return v[index].second != 0;
-	}
-	
-	int getAmount(int index)
-	{
-		return v[index].first;
-	}
-	
-	int getGroup(int index)
-	{
-		return v[index].second;
-	}
-	
-	void setGroup(int index, int group)
-	{
-		v[index].second = group;
-	}
-	
-	void set(int index, int amount, int group)
-	{
-		v[index].first = amount;
-		v[index].second = group;
-	}
-	
-	void addNewGroup(int index1, int amount1, int index2, int amount2)
-	{
-		set(index1, amount1, maxGroup);
-		set(index2, amount2, maxGroup);
-		++maxGroup;
-	}
-	
-	bool areGroupsSame(int index1, int index2)
-	{
-		return v[index1].second == v[index2].second;
-	}
-	
-	void multiply(int m, int group)
-	{
-		for(auto& pr: v)
-		{
-			if(group != pr.second)
-				continue;
-			pr.first *= m;
-		}
-	}
-	
-	bool isSingleGroup()
-	{
-		int group = v[0].second;
-		return std::all_of(v.begin(), v.end(), [&group](const pair<int, int>& pr)-> bool{ 
-			return pr.second == group;});
-	}
-	
-	friend ostream& operator << (ostream& os, const Potion& potion);
-};
-
-ostream& operator << (ostream& os, const Potion& potion)
-{
-	const int n = potion.v.size();
-	os << n << "\n";
-	for(int i=0;i<n;++i)
-		os << i << " : Group = " << potion.v[i].second << ", Amount = " << potion.v[i].first << "\n";
-	os.flush();
-	return os;
-}
-
-bool determinePotionIngredientsProportion(const Input& input, vector<double>& propotions )
-{
-	const int N = input.n;
-	Potion potion(N);
-	for(int i=0;i<(N-1);++i)
-	{
-		int index1 = input.v[i][0];
-		int index2 = input.v[i][1];
-		int amount1 = input.v[i][2];
-		int amount2 = input.v[i][3];
+		const int index1  = iProportionEntry.ingredient1.index;
+		const int index2  = iProportionEntry.ingredient2.index;
+		const int amount1 = iProportionEntry.ingredient1.amount;
+		const int amount2 = iProportionEntry.ingredient2.amount;
 		
-		if(!potion.isGroupAssigned(index1) && !potion.isGroupAssigned(index2))
+		if(!isGroupAssigned(index1) && !isGroupAssigned(index2))
 		{
-			potion.addNewGroup(index1, amount1, index2, amount2);
-			continue;
+			addNewGroup(iProportionEntry);
+			return true;
 		}
 		
 		bool oneAssigned = false;
 		int assignedIndex, unassignedIndex, assignedAmount, unassignedAmount;
 		
-		if(potion.isGroupAssigned(index1) && !potion.isGroupAssigned(index2))
+		if(isGroupAssigned(index1) && !isGroupAssigned(index2))
 		{
 			oneAssigned = true;
 			assignedIndex = index1;
@@ -165,7 +112,7 @@ bool determinePotionIngredientsProportion(const Input& input, vector<double>& pr
 			assignedAmount = amount1;
 			unassignedAmount = amount2;
 		}
-		else if(!potion.isGroupAssigned(index1) && potion.isGroupAssigned(index2))
+		else if(!isGroupAssigned(index1) && isGroupAssigned(index2))
 		{
 			oneAssigned = true;
 			assignedIndex = index2;
@@ -176,50 +123,170 @@ bool determinePotionIngredientsProportion(const Input& input, vector<double>& pr
 		
 		if(oneAssigned)
 		{
-			int existingAssignedAmount = potion.getAmount(assignedIndex);
-			potion.multiply(assignedAmount, potion.getGroup(assignedIndex));
-			potion.set(unassignedIndex, unassignedAmount*existingAssignedAmount, potion.getGroup(assignedIndex));
-			continue;
+			int existingAssignedAmount = getAmount(assignedIndex);
+			multiply(assignedAmount, getGroup(assignedIndex));
+			set({unassignedIndex, unassignedAmount*existingAssignedAmount}, getGroup(assignedIndex));
+			return true;
 		}
 		
-		else if(potion.isGroupAssigned(index1) && potion.isGroupAssigned(index2))
+		if(isGroupAssigned(index1) && isGroupAssigned(index2))
 		{
-			if(potion.getGroup(index1) == potion.getGroup(index2))
-				break;
+			if(getGroup(index1) == getGroup(index2))
+				return false;
 			
-			int value1 = potion.getAmount(index1);
-			int value2 = potion.getAmount(index2);
+			const int value1 = getAmount(index1);
+			const int value2 = getAmount(index2);
 			
-			potion.multiply(amount1*value2, potion.getGroup(index1));
-			potion.multiply(amount2*value1, potion.getGroup(index2));
+			multiply(amount1*value2, getGroup(index1));
+			multiply(amount2*value1, getGroup(index2));
+			modifyGroup(getGroup(index2), getGroup(index1));
+			
+			return true;
 		}
+		
+		return false;
+	}
+	
+	bool isSingleGroup() const
+	{
+		const int group = ingredients[0].group;
+		return std::all_of(ingredients.begin(), ingredients.end(), [&group](const Ingredient& ingredient)-> bool{ 
+			return ingredient.group == group;});
+	}
+	
+	void getProportions(vector<double>& oProportions) const
+	{
+		assert(oProportions.size() == ingredients.size());
+		const int N = oProportions.size();
+		
+		int sm = 0;
+		for(int i=0; i<N;++i)
+			sm+= ingredients[i].amount;
+		
+		for(int i=0; i<N;++i)
+			oProportions[i] = (double)ingredients[i].amount/sm;
+	}
+	
+	private:
+	
+	bool isGroupAssigned(const int index) const
+	{
+		return ingredients[index].group != 0;
+	}
+	
+	int getAmount(const int index) const
+	{
+		return ingredients[index].amount;
+	}
+	
+	int getGroup(const int index) const
+	{
+		return ingredients[index].group;
+	}
+	
+	void setGroup(const int index, const int group)
+	{
+		ingredients[index].group = group;
+	}
+	
+	void set(const ProportionEntry::Entry& ingredientEntry, const int group)
+	{
+		ingredients[ingredientEntry.index].amount = ingredientEntry.amount;
+		ingredients[ingredientEntry.index].group = group;
+	}
+	
+	void addNewGroup(const ProportionEntry& entry)
+	{
+		set(entry.ingredient1, maxGroup);
+		set(entry.ingredient2, maxGroup);
+		++maxGroup;
+	}
+	
+	bool areGroupsSame(const int index1, const int index2) const
+	{
+		return ingredients[index1].group == ingredients[index2].group;
+	}
+	
+	void multiply(const int m, const int group)
+	{
+		for(auto& ingredient: ingredients)
+		{
+			if(group != ingredient.group)
+				continue;
+			ingredient.amount *= m;
+		}
+	}
+	
+	void modifyGroup(const int fromGroup, const int toGroup)
+	{
+		for(auto& ingredient: ingredients)
+		{
+			if(ingredient.group == fromGroup)
+				ingredient.group = toGroup;
+		}
+	}
+	
+	friend ostream& operator << (ostream& os, const Potion& potion);
+};
+
+ostream& operator << (ostream& os, const Potion& potion)
+{
+	const int n = potion.ingredients.size();
+	os << n << "\n";
+	for(int i=0;i<n;++i)
+		os << i << " : Group = " << potion.ingredients[i].group << ", Amount = " << potion.ingredients[i].amount << "\n";
+	os.flush();
+	return os;
+}
+
+bool determineProportions
+(
+	const int N,
+	const vector<ProportionEntry>& iProportionEntries, 
+	vector<double>& oProportions
+)
+{
+	assert(iProportionEntries.size() == (oProportions.size()-1));
+	assert(N == (int)oProportions.size());
+	
+	Potion potion(N);
+	for(int i=0;i<(N-1);++i)
+	{
+		if(!potion.addProportionEntry(iProportionEntries[i]))
+			return false;
 	}
 	
 	//cout << potion;
 
-	if(potion.isSingleGroup())
-	{
-		int sm = 0;
-		for(int i=0;i<N;++i)
-			sm += potion.getAmount(i);
+	if(!potion.isSingleGroup())
+		return false;
 		
-		for(int i=0;i<N;++i)
-			propotions[i] = (double)potion.getAmount(i)/sm;
-		
-		return true;
-	}
-	
-	return false;
+	potion.getProportions(oProportions);
+	return true;
 }
+	
 
 int main()
 {
-	Input input;
-	cin >> input;
-	vector<double> proportions(input.n);
-	determinePotionIngredientsProportion(input, proportions);
+	int N;
+	cin >> N;
 	
-	for(int i=0;i<input.n;++i)
+	vector<ProportionEntry> proportionEntries(N-1);
+	
+	for(int i=0;i<(N-1);++i)
+		cin >> proportionEntries[i];
+
+	vector<double> proportions(N);
+	const bool success = determineProportions(N, proportionEntries, proportions);
+	
+	if(!success)
+	{
+		cout << "No solution exists." << endl;
+		return 0;
+	}
+	
+	cout << "Proportions = \n";
+	for(int i=0;i<N;++i)
 		cout << proportions[i] << " ";
 	cout << endl;
 	
