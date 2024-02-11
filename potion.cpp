@@ -32,12 +32,14 @@ The answer to above problem is as follows:
 (9/15)    (4/15)    (2/15)
 0.6000    0.2667    0.1333
 
+
 Constraints:
 2 < N < 200
 0 < P < 10
 
 Where N is the number of ingredients in potion.
 P is the proportion amount for the ingredient specified in the inputs.
+
 
 * 
 * Analysis:
@@ -53,7 +55,7 @@ Following are the various possibilities:
 1. Both the ingredients don't belong to any group.
    Form a new group and add both ingredients to this new group.
 
-2. One of the ingredients does not belong to any group and the other belongs to existing group.
+2. One of the ingredients don't belong to any group and the other belongs to existing group.
    Add the ingredient with missing group to the existing group.
    Modify the proportion values to match all the proportion constraints.
 
@@ -74,31 +76,32 @@ Following are the various possibilities:
 
 using namespace std;
 
-struct ProportionEntry
+struct Proportion
 {
-	struct Entry
+	struct Ingredient
 	{
 		int index;
 		int amount;
 	};
 	
-	Entry ingredient1;
-	Entry ingredient2;
+	Ingredient one;
+	Ingredient two;
 };
 
-static istream& operator >> (istream& is, ProportionEntry& proportionEntry)
+static istream& operator >> (istream& is, Proportion& proportion)
 {
-	is >> proportionEntry.ingredient1.index;
-	is >> proportionEntry.ingredient2.index;
-	is >> proportionEntry.ingredient1.amount;
-	is >> proportionEntry.ingredient2.amount;
+	is >> proportion.one.index;
+	is >> proportion.two.index;
+	is >> proportion.one.amount;
+	is >> proportion.two.amount;
+	
 	return is;
 }
 
 static bool determineProportions
 (
 	const int N, 
-	const vector<ProportionEntry>& iProportionEntries, 
+	const vector<Proportion>& iProportions, 
 	vector<double>& oProportions
 );
 
@@ -121,16 +124,16 @@ class Potion
 	
 	Potion(const int N) : ingredients(N) {}
 	
-	bool addProportionEntry(const ProportionEntry& iProportionEntry)
+	bool addProportion(const Proportion& iProportion)
 	{
-		const int index1  = iProportionEntry.ingredient1.index;
-		const int index2  = iProportionEntry.ingredient2.index;
-		const int amount1 = iProportionEntry.ingredient1.amount;
-		const int amount2 = iProportionEntry.ingredient2.amount;
+		const int index1  = iProportion.one.index;
+		const int index2  = iProportion.two.index;
+		const int amount1 = iProportion.one.amount;
+		const int amount2 = iProportion.two.amount;
 		
 		if(!isGroupAssigned(index1) && !isGroupAssigned(index2))
 		{
-			addNewGroup(iProportionEntry);
+			addNewGroup(iProportion);
 			return true;
 		}
 		
@@ -222,16 +225,16 @@ class Potion
 		ingredients[index].group = group;
 	}
 	
-	void set(const ProportionEntry::Entry& ingredientEntry, const int group)
+	void set(const Proportion::Ingredient& ingredient, const int group)
 	{
-		ingredients[ingredientEntry.index].amount = ingredientEntry.amount;
-		ingredients[ingredientEntry.index].group = group;
+		ingredients[ingredient.index].amount = ingredient.amount;
+		ingredients[ingredient.index].group = group;
 	}
 	
-	void addNewGroup(const ProportionEntry& entry)
+	void addNewGroup(const Proportion& proportion)
 	{
-		set(entry.ingredient1, maxGroup);
-		set(entry.ingredient2, maxGroup);
+		set(proportion.one, maxGroup);
+		set(proportion.two, maxGroup);
 		++maxGroup;
 	}
 	
@@ -275,17 +278,17 @@ ostream& operator << (ostream& os, const Potion& potion)
 bool determineProportions
 (
 	const int N,
-	const vector<ProportionEntry>& iProportionEntries, 
+	const vector<Proportion>& iProportions, 
 	vector<double>& oProportions
 )
 {
-	assert(iProportionEntries.size() == (oProportions.size()-1));
+	assert(iProportions.size() == (oProportions.size()-1));
 	assert(N == (int)oProportions.size());
 	
 	Potion potion(N);
 	for(int i=0;i<(N-1);++i)
 	{
-		if(!potion.addProportionEntry(iProportionEntries[i]))
+		if(!potion.addProportion(iProportions[i]))
 			return false;
 	}
 	
@@ -304,13 +307,13 @@ int main()
 	int N;
 	cin >> N;
 	
-	vector<ProportionEntry> proportionEntries(N-1);
+	vector<Proportion> iProportions(N-1);
 	
 	for(int i=0;i<(N-1);++i)
-		cin >> proportionEntries[i];
+		cin >> iProportions[i];
 
-	vector<double> proportions(N);
-	const bool success = determineProportions(N, proportionEntries, proportions);
+	vector<double> oProportions(N);
+	const bool success = determineProportions(N, iProportions, oProportions);
 	
 	if(!success)
 	{
@@ -320,7 +323,7 @@ int main()
 	
 	cout << "Proportions = \n";
 	for(int i=0;i<N;++i)
-		cout << proportions[i] << " ";
+		cout << oProportions[i] << " ";
 	cout << endl;
 	
 	return 0;
