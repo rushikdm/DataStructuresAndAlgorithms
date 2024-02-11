@@ -66,6 +66,8 @@ Following are the various possibilities:
 4. Both ingredients belong to already existing same group.
    Invalid input. This leads to disjoint groups because we only have (N-1) entries and N ingredients.
 
+At the end if the the total number of unique groups in potion is not equal to one, report that no solution exists.
+Otherwise determine the proportions for each ingredient in potion based on its amount in potion.
  */
 
 #include <iostream>
@@ -126,56 +128,51 @@ class Potion
 	
 	bool addProportion(const Proportion& iProportion)
 	{
-		const int index1  = iProportion.one.index;
-		const int index2  = iProportion.two.index;
-		const int amount1 = iProportion.one.amount;
-		const int amount2 = iProportion.two.amount;
+		const Proportion::Ingredient one  = iProportion.one;
+		const Proportion::Ingredient two  = iProportion.two;
 		
-		if(!isGroupAssigned(index1) && !isGroupAssigned(index2))
+		if(!isGroupAssigned(one.index) && !isGroupAssigned(two.index))
 		{
 			addNewGroup(iProportion);
 			return true;
 		}
 		
 		bool oneAssigned = false;
-		int assignedIndex, unassignedIndex, assignedAmount, unassignedAmount;
+		Proportion::Ingredient assigned;
+		Proportion::Ingredient unassigned;
 		
-		if(isGroupAssigned(index1) && !isGroupAssigned(index2))
+		if(isGroupAssigned(one.index) && !isGroupAssigned(two.index))
 		{
 			oneAssigned = true;
-			assignedIndex = index1;
-			unassignedIndex = index2;
-			assignedAmount = amount1;
-			unassignedAmount = amount2;
+			assigned = one;
+			unassigned = two;
 		}
-		else if(!isGroupAssigned(index1) && isGroupAssigned(index2))
+		else if(!isGroupAssigned(one.index) && isGroupAssigned(two.index))
 		{
 			oneAssigned = true;
-			assignedIndex = index2;
-			unassignedIndex = index1;
-			assignedAmount = amount2;
-			unassignedAmount = amount1;
+			assigned = two;
+			unassigned = one;
 		}
 		
 		if(oneAssigned)
 		{
-			int existingAssignedAmount = getAmount(assignedIndex);
-			multiply(assignedAmount, getGroup(assignedIndex));
-			set({unassignedIndex, unassignedAmount*existingAssignedAmount}, getGroup(assignedIndex));
+			int existingAssignedAmount = getAmount(assigned.index);
+			multiply(assigned.amount, getGroup(assigned.index));
+			set({unassigned.index, unassigned.amount*existingAssignedAmount}, getGroup(assigned.index));
 			return true;
 		}
 		
-		if(isGroupAssigned(index1) && isGroupAssigned(index2))
+		if(isGroupAssigned(one.index) && isGroupAssigned(two.index))
 		{
-			if(getGroup(index1) == getGroup(index2))
+			if(areGroupsSame(one.index, two.index))
 				return false;
 			
-			const int value1 = getAmount(index1);
-			const int value2 = getAmount(index2);
+			const int value1 = getAmount(one.index);
+			const int value2 = getAmount(two.index);
 			
-			multiply(amount1*value2, getGroup(index1));
-			multiply(amount2*value1, getGroup(index2));
-			modifyGroup(getGroup(index2), getGroup(index1));
+			multiply(one.amount*value2, getGroup(one.index));
+			multiply(two.amount*value1, getGroup(two.index));
+			modifyGroup(getGroup(two.index), getGroup(one.index));
 			
 			return true;
 		}
