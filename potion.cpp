@@ -24,13 +24,39 @@ Sample input:
 0 1 9 4
 2 1 1 2
 
-3 is the total number of ingredients in potion.
+3 value mentioned in first line is the total number of ingredients in potion.
 Second line indicates that the relative poportions of ingredients 0, 1 should be 9:4
 Similarly last line indicates that the relative proportions of ingredients 2, 1 should be 1:2
 The final proportions of all ingredients should respect all the given relative proportions if solution exists.
 The answer to above problem is as follows:
 (9/15)    (4/15)    (2/15)
 0.6000    0.2667    0.1333
+
+* 
+* Analysis:
+*
+Assume the mathetical inductive step k where the existing proportions of all the ingredients in potion are properly defined.
+These ingredients may belong to one or multiple disjoint groups.
+The potion may contain some ingredients for which the proportions are not yet defined and they don't belong to any group.
+
+Now we need to add new proprtion entry for two ingredients.
+
+Following are the various possibilities:
+
+1. Both the ingredients don't belong to any group.
+   Form a new group and add both ingredients to this new group.
+
+2. One of the ingredients does not belong to any group and the other belongs to existing group.
+   Add the ingredient with missing group to the existing group.
+   Modify the prortion values to match all the proportion constraints.
+
+3. Both ingredients belong to already existing different groups.
+   Modify the prortion values for both the groups to match all the proportion constraints.
+   Merge both these groups.
+
+4. Both ingredients belong to already existing same group.
+   Invalid input. This leads to disjoint groups because we only have (N-1) entries and N ingredients.
+
  */
 
 #include <iostream>
