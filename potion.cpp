@@ -297,7 +297,89 @@ bool determineProportions
 	potion.getProportions(oProportions);
 	return true;
 }
+
+void print(const vector<pair<int, int>>& v)
+{
+	cout << "\n";
+	for(const auto& pr : v)
+		cout << pr.first << " : " << pr.second << " , ";
 	
+	cout << endl;
+}
+
+bool solve(const int N, const vector<Proportion>& iProportions, vector<double>& oProportions)
+{
+	assert(iProportions.size() == (oProportions.size()-1));
+	assert(N == (int)oProportions.size());
+	
+	vector<vector<int>> connections(N);
+	for(int i=0; i<N; ++i)
+	{
+		connections[iProportions[i].one.index].push_back(i);
+		connections[iProportions[i].two.index].push_back(i);
+	}
+	
+	vector<pair<int,int>> ingredients; // first index :: second amount
+	vector<bool> visited(N);
+	queue<int> q;
+	q.push(0);
+	visited[0] = true;
+	ingredients.push_back({0,1});
+	int count = 1;
+	while(!q.empty())
+	{
+		const int index = q.front();
+		q.pop();
+		
+		for(int i=0; i<(int)connections[index].size();++i)
+		{
+			const Proportion& proportion = iProportions[connections[index][i]];
+			const Proportion::Ingredient& prev = (index == proportion.one.index) ? proportion.one : proportion.two;
+			const Proportion::Ingredient& present = (index == proportion.one.index) ? proportion.two : proportion.one;
+			if(visited[present.index])
+				continue;
+
+			q.push(present.index);			
+			visited[present.index] = true;
+			
+			auto itr = std::find_if(ingredients.begin(), ingredients.end(), [&index](const pair<int, int>& ingredient) -> bool {
+				return index == ingredient.first;
+			});
+			
+			assert(itr != ingredients.end());
+			const int prevAmount = itr->second;
+			
+			for(int j=0;j<(int)ingredients.size();++j)
+				ingredients[j].second *= prev.amount;
+			ingredients.push_back({present.index, present.amount*prevAmount});
+			cout << "\n" << count;
+			print(ingredients);
+			++count;
+		}
+	}
+	
+	if(count != N)
+	{
+		cout << "\ncount = " << count << " ; N = " << N << "\n count != N failure" << endl;
+		return false;
+	}
+	
+	assert(N == (int)ingredients.size());
+	std::sort(ingredients.begin(), ingredients.end());
+	
+	int sm = 0;
+	for(int i=0;i<N;++i)
+	{
+		if(ingredients[i].first != i)
+			return false;
+		sm += ingredients[i].second;
+	}
+	
+	for(int i=0;i<N;++i)
+		oProportions[i] = (double)ingredients[i].second/sm;
+	
+	return true;
+}
 
 int main()
 {
