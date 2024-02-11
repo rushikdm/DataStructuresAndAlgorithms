@@ -32,6 +32,13 @@ The answer to above problem is as follows:
 (9/15)    (4/15)    (2/15)
 0.6000    0.2667    0.1333
 
+Constraints:
+2 < N < 200
+0 < P < 10
+
+Where N is the number of ingredients in potion.
+P is the proportion amount for the ingredient specified in the inputs.
+
 * 
 * Analysis:
 *
