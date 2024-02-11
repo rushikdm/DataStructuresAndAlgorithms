@@ -8,7 +8,7 @@
  *     index1, index2, amount1, amount2
  * 
  *     index1 denotes the index of ingredient 1
- *     index2 denotres the index of ingredient 2
+ *     index2 denotes the index of ingredient 2
  *     amount1 denotes the amount of ingredient 1
  *     amount2 denotes the amount of ingredient 2
  * 
