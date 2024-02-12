@@ -40,9 +40,21 @@ Constraints:
 Where N is the number of ingredients in potion.
 P is the proportion amount for the ingredient specified in the inputs.
 
+*
+* Approach 1 : Depth first search traversal (DFS) algorithm on the graph of ingradients.
+* This graph has ingredients as nodes and relative proportions given in input as edges between the nodes.
+* Since there are N nodes and (N-1) edges, following properties can be deduced:
+*   - For valid inputs, it must form a tree without cycles.
+*   - For valid inputs, all the nodes must be connected.
+* If above conditions are satisfied, then, problem can be solved and has unique solution.
+* Otherwise, unique solution cannot be found.
+* To perform depth first traversal, connections data-structure needs to be built using the inputs.
+* This DFS algorithm is implemented using determineProportionsUsingDFS() function in this file.
+* Time complexity  = O(N) 
+* Space complexity = O(N)
 
 * 
-* Analysis:
+* Approach 2: Incremental formation & merging of disjoint sets for ingredients.
 *
 Assume the mathematical inductive step k where the existing proportions of all the ingredients in potion are properly defined.
 These ingredients may belong to one or multiple disjoint groups.
@@ -68,13 +80,19 @@ Following are the various possibilities:
 
 At the end if the the total number of unique groups in potion is not equal to one, report that no solution exists.
 Otherwise determine the proportions for each ingredient in potion based on its amount in potion.
- */
+* 
+* Approach 2 is implemented using determineProportions() function in this file.
+* Time complexity  = O(N^2) 
+* Space complexity = O(N)
+
+*/
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <numeric>
 #include <assert.h>
+#include <queue>
 
 using namespace std;
 
@@ -100,16 +118,19 @@ static istream& operator >> (istream& is, Proportion& proportion)
 	return is;
 }
 
-static bool determineProportions
+static bool determineProportionsUsingDFS
 (
 	const int N, 
 	const vector<Proportion>& iProportions, 
 	vector<double>& oProportions
 );
 
-class Potion;
-
-static ostream& operator << (ostream& os, const Potion& potion);
+static bool determineProportions
+(
+	const int N, 
+	const vector<Proportion>& iProportions, 
+	vector<double>& oProportions
+);
 
 class Potion
 {
@@ -262,16 +283,6 @@ class Potion
 	friend ostream& operator << (ostream& os, const Potion& potion);
 };
 
-ostream& operator << (ostream& os, const Potion& potion)
-{
-	const int n = potion.ingredients.size();
-	os << n << "\n";
-	for(int i=0;i<n;++i)
-		os << i << " : Group = " << potion.ingredients[i].group << ", Amount = " << potion.ingredients[i].amount << "\n";
-	os.flush();
-	return os;
-}
-
 bool determineProportions
 (
 	const int N,
@@ -289,8 +300,6 @@ bool determineProportions
 			return false;
 	}
 	
-	//cout << potion;
-
 	if(!potion.isSingleGroup())
 		return false;
 		
@@ -298,33 +307,32 @@ bool determineProportions
 	return true;
 }
 
-void print(const vector<pair<int, int>>& v)
-{
-	cout << "\n";
-	for(const auto& pr : v)
-		cout << pr.first << " : " << pr.second << " , ";
-	
-	cout << endl;
-}
-
-bool solve(const int N, const vector<Proportion>& iProportions, vector<double>& oProportions)
+bool determineProportionsUsingDFS
+(
+	const int N, 
+	const vector<Proportion>& iProportions, 
+	vector<double>& oProportions
+)
 {
 	assert(iProportions.size() == (oProportions.size()-1));
 	assert(N == (int)oProportions.size());
 	
 	vector<vector<int>> connections(N);
-	for(int i=0; i<N; ++i)
+	for(int i=0; i<(N-1); ++i)
 	{
 		connections[iProportions[i].one.index].push_back(i);
 		connections[iProportions[i].two.index].push_back(i);
 	}
 	
 	vector<pair<int,int>> ingredients; // first index :: second amount
+	ingredients.push_back({0,1});
+	
 	vector<bool> visited(N);
+	visited[0] = true;
+	
 	queue<int> q;
 	q.push(0);
-	visited[0] = true;
-	ingredients.push_back({0,1});
+	
 	int count = 1;
 	while(!q.empty())
 	{
@@ -334,35 +342,31 @@ bool solve(const int N, const vector<Proportion>& iProportions, vector<double>& 
 		for(int i=0; i<(int)connections[index].size();++i)
 		{
 			const Proportion& proportion = iProportions[connections[index][i]];
-			const Proportion::Ingredient& prev = (index == proportion.one.index) ? proportion.one : proportion.two;
-			const Proportion::Ingredient& present = (index == proportion.one.index) ? proportion.two : proportion.one;
-			if(visited[present.index])
+			const Proportion::Ingredient& current = (index == proportion.one.index) ? proportion.one : proportion.two;
+			const Proportion::Ingredient& adj = (index == proportion.one.index) ? proportion.two : proportion.one;
+			if(visited[adj.index])
 				continue;
 
-			q.push(present.index);			
-			visited[present.index] = true;
+			q.push(adj.index);			
+			visited[adj.index] = true;
 			
-			auto itr = std::find_if(ingredients.begin(), ingredients.end(), [&index](const pair<int, int>& ingredient) -> bool {
-				return index == ingredient.first;
-			});
+			auto find_lambda = [&index](const pair<int, int>& ingredient) -> bool {	return index == ingredient.first; };
+			auto itr = std::find_if(ingredients.begin(), ingredients.end(), find_lambda);
 			
 			assert(itr != ingredients.end());
-			const int prevAmount = itr->second;
+			const int currentAmount = itr->second;
 			
 			for(int j=0;j<(int)ingredients.size();++j)
-				ingredients[j].second *= prev.amount;
-			ingredients.push_back({present.index, present.amount*prevAmount});
-			cout << "\n" << count;
-			print(ingredients);
+				ingredients[j].second *= current.amount;
+
+			ingredients.push_back({adj.index, adj.amount*currentAmount});
+
 			++count;
 		}
 	}
 	
 	if(count != N)
-	{
-		cout << "\ncount = " << count << " ; N = " << N << "\n count != N failure" << endl;
 		return false;
-	}
 	
 	assert(N == (int)ingredients.size());
 	std::sort(ingredients.begin(), ingredients.end());
@@ -372,8 +376,10 @@ bool solve(const int N, const vector<Proportion>& iProportions, vector<double>& 
 	{
 		if(ingredients[i].first != i)
 			return false;
-		sm += ingredients[i].second;
 	}
+	
+	for(int i=0;i<N;++i)
+		sm += ingredients[i].second;
 	
 	for(int i=0;i<N;++i)
 		oProportions[i] = (double)ingredients[i].second/sm;
@@ -392,7 +398,8 @@ int main()
 		cin >> iProportions[i];
 
 	vector<double> oProportions(N);
-	const bool success = determineProportions(N, iProportions, oProportions);
+	//const bool success = determineProportions(N, iProportions, oProportions);
+	const bool success = determineProportionsUsingDFS(N, iProportions, oProportions);
 	
 	if(!success)
 	{
