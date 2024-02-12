@@ -106,13 +106,6 @@ public class Potion
         while (!q.isEmpty())
         {
             final int index = q.remove();
-            Optional<Ingredient> optCurrent = ingredients.stream()
-                    .filter(ingredient -> ingredient.index == index)
-                    .findFirst();
-
-            assert optCurrent.isPresent();
-
-            final Ingredient currentIngredient = optCurrent.get();
 
             for (int i = 0; i < connections.get(index).size(); ++i)
             {
@@ -129,11 +122,18 @@ public class Potion
                 visited.set(adj.index, true);
                 q.add(adj.index);
 
-                final int currentAmount = currentIngredient.amount;
+                int currentAmount = -1;
 
                 for (int j = 0; j < ingredients.size(); ++j)
-                    ingredients.get(j).amount *= current.amount;
+                {
+                    if(ingredients.get(j).index == index)
+                        currentAmount = ingredients.get(j).amount;
 
+                    ingredients.get(j).amount *= current.amount;
+                }
+
+                assert currentAmount > 0;
+                
                 ingredients.add(new Ingredient(adj.index, adj.amount * currentAmount));
 
                 ++count;
