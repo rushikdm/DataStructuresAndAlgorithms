@@ -40,8 +40,8 @@ Constraints:
 Where N is the number of ingredients in potion.
 P is the proportion amount for the ingredient specified in the inputs.
 
-
 * Approach 1 : Depth first search traversal (DFS) algorithm on the graph of ingradients.
+
 This graph has ingredients as nodes and relative proportions given in input as edges between the nodes.
 Since there are N nodes and (N-1) edges, following properties can be deduced:
    - For valid inputs, it must form a tree without cycles.
@@ -77,10 +77,10 @@ Following are the various possibilities:
 
 At the end if the the total number of unique groups in potion is not equal to one, report that no solution exists.
 Otherwise determine the proportions for each ingredient in potion based on its amount in potion.
-*
-* Approach 2 is implemented using determineProportions() function in this file.
-* Time complexity  = O(N^2)
-* Space complexity = O(N)
+
+Approach 2 is implemented using determineProportions() function in this file.
+    Time complexity  = O(N^2)
+    Space complexity = O(N)
 
 */
 
@@ -337,11 +337,6 @@ bool determineProportionsUsingDFS
 		const int index = q.front();
 		q.pop();
 
-		auto find_lambda = [&index](const Proportion::Ingredient & ingredient) -> bool {	return index == ingredient.index; };
-		auto itr = std::find_if(ingredients.begin(), ingredients.end(), find_lambda);
-		assert(itr != ingredients.end());
-		Proportion::Ingredient & currentIngredient = *itr;
-
 		for (int i = 0; i < (int)connections[index].size(); ++i)
 		{
 			const Proportion& proportion = iProportions[connections[index][i]];
@@ -357,11 +352,16 @@ bool determineProportionsUsingDFS
 			q.push(adj.index);
 			visited[adj.index] = true;
 
-			const int currentAmount = currentIngredient.amount;
+			int currentAmount = -1;
 
 			for (int j = 0; j < (int)ingredients.size(); ++j)
+			{
+				if (ingredients[j].index == index)
+					currentAmount = ingredients[j].amount;
 				ingredients[j].amount *= current.amount;
+			}
 
+			assert(currentAmount > 0);
 			ingredients.push_back({ adj.index, adj.amount * currentAmount });
 
 			++count;
@@ -372,8 +372,7 @@ bool determineProportionsUsingDFS
 		return false;
 
 	assert(N == (int)ingredients.size());
-	auto sort_lambda = [](const Proportion::Ingredient & ingredient1, const Proportion::Ingredient & ingredient2)
-	{
+	auto sort_lambda = [](const Proportion::Ingredient & ingredient1, const Proportion::Ingredient & ingredient2) -> bool {
 		return ingredient1.index < ingredient2.index;
 	};
 	std::sort(ingredients.begin(), ingredients.end(), sort_lambda);
